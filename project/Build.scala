@@ -6,7 +6,7 @@ object MyBuild extends Build {
   private def distsMessage() {
     scala.Console.err.println("No distributions found: set SCALA_DISTS to a path containing scala distributions.")
   }
-  
+
   // Set this to path to dists
   val distPath = sys.env.getOrElse("SCALA_DISTS", ".")
 
@@ -52,6 +52,15 @@ object MyBuild extends Build {
     name := "scala-benchmarking-template",
     version := "1.0.0-SNAPSHOT",
     scalaVersion := "2.9.1",
+    //javaOptions ++= Seq("-XX:+PrintCompilation", "-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintAssembly",
+    //                    "-XX:+PrintStubCode", "-XX:+PrintAdapterHandlers", "-XX:+PrintNativeNMethods",
+    //                    "-XX:+PrintInterpreter", "-XX:+LogCompilation", "-server"),
+    //javaOptions ++= Seq("-XX:+PrintCompilation", "-XX:+UnlockDiagnosticVMOptions",
+    //                    "-XX:CompileCommand=print,*Range$IncClosedRange.foreach$mVc$sp",
+    //                    "-XX:+LogCompilation", "-server"),
+    //javaOptions ++= Seq("-XX:+UnlockDiagnosticVMOptions",
+    //                    "-XX:CompileCommand=option,*Benchmark$$anonfun$timeForeachUnit$1.apply$mcI$sp,PrintOptoAssembly",
+    //                    "-XX:+LogCompilation", "-server"),
     libraryDependencies ++= Seq(
         "com.google.code.java-allocation-instrumenter" % "java-allocation-instrumenter" % "2.0",
         "com.google.code.caliper" % "caliper" % "1.0-SNAPSHOT",
@@ -74,27 +83,27 @@ object MyBuild extends Build {
 class MyRunner(subproject: String, config: ForkScalaRun) extends sbt.ScalaRun {
   def run(mainClass: String, classpath: Seq[File], options: Seq[String], log: Logger): Option[String] = {
     log.info("Running " + subproject + " " + mainClass + " " + options.mkString(" "))
-                                                                                                  
-    val javaOptions = classpathOption(classpath) ::: mainClass :: options.toList                 
-    val strategy = config.outputStrategy getOrElse LoggedOutput(log)                              
-    val process =  Fork.java.fork(config.javaHome, 
+
+    val javaOptions = classpathOption(classpath) ::: mainClass :: options.toList
+    val strategy = config.outputStrategy getOrElse LoggedOutput(log)
+    val process =  Fork.java.fork(config.javaHome,
                                   config.runJVMOptions ++ javaOptions,
                                   config.workingDirectory,
                                   Map.empty,
                                   config.connectInput,
                                   strategy)
-    def cancel() = {                                                                              
-      log.warn("Run canceled.")                                                             
-      process.destroy()                                                                     
-      1                                                                                     
-    }                                                                                             
-    val exitCode = try process.exitValue() catch { case e: InterruptedException => cancel() }     
-    processExitCode(exitCode, "runner")                                                           
-  }                                                                                                     
-  private def classpathOption(classpath: Seq[File]) = "-classpath" :: Path.makeString(classpath) :: Nil 
-  private def processExitCode(exitCode: Int, label: String) = {                                                                                                     
-    if(exitCode == 0) None                                                                                  
-    else Some("Nonzero exit code returned from " + label + ": " + exitCode)                    
-  }                                                                                                     
-}   
+    def cancel() = {
+      log.warn("Run canceled.")
+      process.destroy()
+      1
+    }
+    val exitCode = try process.exitValue() catch { case e: InterruptedException => cancel() }
+    processExitCode(exitCode, "runner")
+  }
+  private def classpathOption(classpath: Seq[File]) = "-classpath" :: Path.makeString(classpath) :: Nil
+  private def processExitCode(exitCode: Int, label: String) = {
+    if(exitCode == 0) None
+    else Some("Nonzero exit code returned from " + label + ": " + exitCode)
+  }
+}
 
