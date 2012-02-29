@@ -63,7 +63,7 @@ object MyBuild extends Build {
     //                    "-XX:+LogCompilation", "-server"),
     libraryDependencies ++= Seq(
         "com.google.code.java-allocation-instrumenter" % "java-allocation-instrumenter" % "2.0",
-        "com.google.code.caliper" % "caliper" % "1.0-SNAPSHOT",
+        "com.google.caliper" % "caliper" % "0.5-rc1",
         "com.google.code.gson" % "gson" % "1.7.1"
     ),
     resolvers += "sonatypeSnapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
