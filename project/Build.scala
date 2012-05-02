@@ -51,7 +51,7 @@ object MyBuild extends Build {
     organization := "com.example",
     name := "scala-benchmarking-template",
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.9.1",
+    scalaVersion := "2.9.2",
     //javaOptions ++= Seq("-XX:+PrintCompilation", "-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintAssembly",
     //                    "-XX:+PrintStubCode", "-XX:+PrintAdapterHandlers", "-XX:+PrintNativeNMethods",
     //                    "-XX:+PrintInterpreter", "-XX:+LogCompilation", "-server"),
