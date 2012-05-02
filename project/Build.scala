@@ -15,7 +15,7 @@ object MyBuild extends Build {
   lazy val root = (
     Project("root", file("."))
     settings(aggregate in run := true,
-             parallelExecution := false, // I hate this, but run needs to be serial, so compile has to follow as well
+             parallelExecution in Global := false, // I hate this, but run needs to be serial, so compile has to follow as well
              cancelable := true,
              sources in Compile := Nil,
              run in Compile <<= inputTask { _ map { ignore => () } })
@@ -69,8 +69,6 @@ object MyBuild extends Build {
     resolvers += "sonatypeSnapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
 
     cancelable := true,
-
-    parallelExecution := false, // I hate this, but run needs to be serial, so compile has to follow as well
 
     runner in Compile in run <<= (thisProject, taskTemporaryDirectory, scalaInstance, baseDirectory, javaOptions, outputStrategy, javaHome, connectInput) map {
       (tp, tmp, si, base, options, strategy, javaHomeDir, connectIn) =>
